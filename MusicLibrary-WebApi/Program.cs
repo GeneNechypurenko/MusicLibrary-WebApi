@@ -25,12 +25,7 @@ namespace MusicLibrary_WebApi
 
 			var app = builder.Build();
 
-			if (app.Environment.IsDevelopment())
-			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
-			}
-
+			app.UseStaticFiles();
 			app.UseHttpsRedirection();
 			app.MapControllers();
 

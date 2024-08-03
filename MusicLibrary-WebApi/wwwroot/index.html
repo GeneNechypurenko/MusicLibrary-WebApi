@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MusicLibraryApp</title>
+    <link rel="stylesheet" href="css/site.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Monoton&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <div class="layout-gradient_line_decoration"></div>
+        <div class="layout-header-container">
+            <h2>TuneBox</h2>
+            <div id="header-navigation" class="layout-header-navigation">
+                <a class="link_type_a" id="link-users">USERS</a>
+                <a class="link_type_a" id="link-genres">GENRES</a>
+                <a class="link_type_a" id="link-tunes">TUNES</a>
+            </div>
+            <div class="layout-header-search"></div>
+            <div id="header-content" class="layout-header-content">
+                <p class="display_username" id="greeting">Hello, </p>
+                <a class="link_type_c" id="link-logout" href="#">LogOut</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="layout-main-container" id="main-content">
+
+            <!-- Login Form -->
+            <div class="data-container" id="login-container">
+                <form id="login-form" method="post">
+                    <input id="username" placeholder="Enter your username" name="username" />
+                    <span id="username-error" class="validation-message"></span>
+                    <hr />
+                    <input id="password" placeholder="Enter your password" name="password" type="password" />
+                    <span id="password-error" class="validation-message"></span>
+                    <hr />
+                    <button class="confirm-button" type="submit">Log In</button>
+                </form>
+            </div>
+
+            <!-- Tunes Filter and Tunes List -->
+            <div class="filter" id="tunes-filter">
+                <h2>FEATURED GENRES</h2>
+                <form method="get" id="filter-form">
+                    <select id="genre-select" name="selected" onchange="filterTunes()"></select>
+                    <a class="link_type_d" id="link-create-tune" href="#">CREATE NEW TUNE</a>
+                </form>
+            </div>
+
+            <section id="tunes-container">
+                <div class="pagination">
+                    <a href="#" id="prev-page" class="page-back" onclick="loadPreviousPage()"></a>
+                </div>
+                <div id="tune-list" class="tune-container"></div>
+                <div class="pagination">
+                    <a href="#" id="next-page" class="page-forward" onclick="loadNextPage()"></a>
+                </div>
+            </section>
+
+            <!-- Users Filter and Users List -->
+            <div class="filter" id="users-filter">
+                <h2>USER MANAGEMENT</h2>
+                <form method="get" id="user-filter-form">
+                    <select id="user-select" name="selected" onchange="filterUsers()">
+                        <!-- Options will be dynamically added by JavaScript -->
+                    </select>
+                </form>
+            </div>
+
+            <section id="users-container">
+                <div class="pagination">
+                    <a href="#" id="prev-user-page" class="page-back" onclick="loadPreviousUserPage()"></a>
+                </div>
+
+                <div id="user-list" class="user-container">
+                    <!-- Users will be dynamically added by JavaScript -->
+                </div>
+
+                <div class="pagination">
+                    <a href="#" id="next-user-page" class="page-forward" onclick="loadNextUserPage()"></a>
+                </div>
+            </section>
+
+            <!-- Additional sections like Genres can be added here -->
+
+        </section>
+    </main>
+
+    <footer>
+        <div class="layout-gradient_line_decoration"></div>
+    </footer>
+
+    <script src="js/site.js"></script>
+</body>
+</html>
