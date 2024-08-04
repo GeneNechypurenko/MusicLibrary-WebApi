@@ -61,6 +61,78 @@
                 </div>
             </section>
 
+            <!-- Tunes Create -->
+            <div class="user-create-data-container" id="tunes-create-container">
+                <form class="user-create-form" action="/api/tunes/create" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="__RequestVerificationToken" value="...">
+                    <div class="user-create-group-section">
+                        <div class="user-create-input-group">
+                            <input placeholder="Enter Artist Name" id="performer" name="performer" />
+                            <span class="validation-message" id="performer-error"></span>
+                            <hr />
+                            <input placeholder="Enter Title" id="title" name="title" />
+                            <span class="validation-message" id="title-error"></span>
+                            <hr />
+                            <select id="category-id" name="categoryId"></select>
+                            <span class="validation-message" id="category-error"></span>
+                        </div>
+                        <div class="user-create-input-group">
+                            <p>Upload Audio</p>
+                            <input type="file" id="file" name="file" />
+                            <span class="validation-message" id="file-error"></span>
+                            <hr />
+                            <p>Upload Poster</p>
+                            <input type="file" id="poster" name="poster" />
+                            <span class="validation-message" id="poster-error"></span>
+                        </div>
+                    </div>
+                    <div class="user-create-button-section">
+                        <button class="confirm-button" type="submit">Confirm</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tunes Edit -->
+            <div class="user-create-data-container" id="tunes-edit-container">
+                <form class="user-create-form" action="/api/tunes/edit" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="tuneId" id="tune-id" value="">
+
+                    <div class="user-create-group-section">
+                        <div class="user-create-input-group">
+                            <select id="is-authorize" name="isAuthorize"></select>
+                            <span>New Authorization Warning</span>
+                            <hr />
+                            <select id="is-blocked" name="isBlocked"></select>
+                            <span>Blocked Warning</span>
+                            <hr />
+                            <a class="delete-link" href="#" data-id="" id="delete-tune">Delete Tune</a>
+                        </div>
+                        <div class="user-create-input-group">
+                            <input placeholder="Enter Artist Name" id="edit-performer" name="performer" />
+                            <span class="validation-message" id="edit-performer-error"></span>
+                            <hr />
+                            <input placeholder="Enter Title" id="edit-title" name="title" />
+                            <span class="validation-message" id="edit-title-error"></span>
+                            <hr />
+                            <select id="edit-category-id" name="categoryId"></select>
+                            <span class="validation-message" id="edit-category-error"></span>
+                        </div>
+                        <div class="user-create-input-group">
+                            <p>Upload Audio</p>
+                            <input type="file" id="edit-file" name="file" />
+                            <span class="validation-message" id="edit-file-error"></span>
+                            <hr />
+                            <p>Upload Poster</p>
+                            <input type="file" id="edit-poster" name="poster" />
+                            <span class="validation-message" id="edit-poster-error"></span>
+                        </div>
+                    </div>
+                    <div class="user-create-button-section">
+                        <button class="confirm-button" type="submit">Confirm</button>
+                    </div>
+                </form>
+            </div>
+
             <!-- Users Filter and Users List -->
             <div class="filter" id="users-filter">
                 <h2>USER MANAGEMENT</h2>

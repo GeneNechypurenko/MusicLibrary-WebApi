@@ -8,7 +8,9 @@
         '#tunes-filter',
         '#tunes-container',
         '#users-filter',
-        '#users-container'
+        '#users-container',
+        '#tunes-create-container',
+        '#tunes-edit-container'
     ];
 
     const elementsToShow = [
@@ -207,4 +209,74 @@
 
     loadGenres();
     loadTunes();
+
+    const createTuneLink = document.getElementById('link-create-tune');
+    const tunesFilter = document.getElementById('tunes-filter');
+    const tunesContainer = document.getElementById('tunes-container');
+    const tunesCreateContainer = document.getElementById('tunes-create-container');
+
+    createTuneLink.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        tunesFilter.style.display = 'none';
+        tunesContainer.style.display = 'none';
+
+        tunesCreateContainer.style.display = '';
+    });
+
+    const form = document.querySelector('#tunes-create-container .user-create-form');
+    const performerInput = document.getElementById('performer');
+    const titleInput = document.getElementById('title');
+    const categoryIdSelect = document.getElementById('category-id');
+    const fileInput = document.getElementById('file');
+    const posterInput = document.getElementById('poster');
+
+    const categorySelect = document.getElementById('category-id');
+
+    fetch('/api/category')
+        .then(response => response.json())
+        .then(categories => {
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.id;
+                option.textContent = category.genre;
+                categorySelect.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Error fetching categories:', error));
+
+    form.addEventListener('submit', function (event) {
+        let isValid = true;
+
+        document.querySelectorAll('.validation-message').forEach(el => el.textContent = '');
+
+        if (!performerInput.value.trim()) {
+            document.getElementById('performer-error').textContent = 'Artist Name is required.';
+            isValid = false;
+        }
+
+        if (!titleInput.value.trim()) {
+            document.getElementById('title-error').textContent = 'Title is required.';
+            isValid = false;
+        }
+
+        if (categoryIdSelect.value === "") {
+            document.getElementById('category-error').textContent = 'Please select a category.';
+            isValid = false;
+        }
+
+        if (fileInput.files.length === 0) {
+            document.getElementById('file-error').textContent = 'Please upload an audio file.';
+            isValid = false;
+        }
+
+        if (posterInput.files.length === 0) {
+            document.getElementById('poster-error').textContent = 'Please upload a poster image.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
 });

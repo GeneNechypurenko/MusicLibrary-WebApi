@@ -21,6 +21,7 @@ namespace MusicLibrary_WebApi
 			{
 				options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 			});
+
 			builder.Services.AddSwaggerGen();
 
 			var app = builder.Build();
