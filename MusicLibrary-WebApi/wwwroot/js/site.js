@@ -5,6 +5,7 @@
         '#link-tunes',
         '#greeting',
         '#link-logout',
+        '#link-back',
         '#tunes-filter',
         '#tunes-container',
         '#users-filter',
@@ -162,7 +163,7 @@
                     </div>
                     <div class="tune-box-content">
                         <div class="tune-item-description">
-                            <a class="link_type_d" href="/create">"${tune.performer} - ${tune.title}"</a>
+                            <a class="link_type_d" id="link-edit-tune" href="">"${tune.performer} - ${tune.title}"</a>
                         </div>
                         <div class="tune-item-audio">
                             <audio controls>
@@ -214,15 +215,29 @@
     const tunesFilter = document.getElementById('tunes-filter');
     const tunesContainer = document.getElementById('tunes-container');
     const tunesCreateContainer = document.getElementById('tunes-create-container');
+    const backLink = document.getElementById('link-back');
 
     createTuneLink.addEventListener('click', function (event) {
         event.preventDefault();
 
         tunesFilter.style.display = 'none';
         tunesContainer.style.display = 'none';
+        logoutLink.style.display = 'none';
 
+        backLink.style.display = '';
         tunesCreateContainer.style.display = '';
     });
+
+    backLink.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        backLink.style.display = 'none';
+        tunesCreateContainer.style.display = 'none';
+
+        tunesFilter.style.display = '';
+        tunesContainer.style.display = '';
+        logoutLink.style.display = '';
+    })
 
     const form = document.querySelector('#tunes-create-container .user-create-form');
     const performerInput = document.getElementById('performer');
@@ -231,21 +246,33 @@
     const fileInput = document.getElementById('file');
     const posterInput = document.getElementById('poster');
 
-    const categorySelect = document.getElementById('category-id');
+    function loadCategories() {
+        fetch('/api/category')
+            .then(response => response.json())
+            .then(categories => {
+                categoryIdSelect.innerHTML = '';
 
-    fetch('/api/category')
-        .then(response => response.json())
-        .then(categories => {
-            categories.forEach(category => {
-                const option = document.createElement('option');
-                option.value = category.id;
-                option.textContent = category.genre;
-                categorySelect.appendChild(option);
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = 'Select a Category';
+                categoryIdSelect.appendChild(placeholderOption);
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.genre;
+                    categoryIdSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading categories:', error);
             });
-        })
-        .catch(error => console.error('Error fetching categories:', error));
+    }
+    loadCategories();
 
     form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
         let isValid = true;
 
         document.querySelectorAll('.validation-message').forEach(el => el.textContent = '');
@@ -265,18 +292,36 @@
             isValid = false;
         }
 
-        if (fileInput.files.length === 0) {
-            document.getElementById('file-error').textContent = 'Please upload an audio file.';
-            isValid = false;
-        }
-
-        if (posterInput.files.length === 0) {
-            document.getElementById('poster-error').textContent = 'Please upload a poster image.';
-            isValid = false;
-        }
-
         if (!isValid) {
-            event.preventDefault();
+            return;
         }
+
+        const formData = new FormData();
+        formData.append('performer', performerInput.value.trim());
+        formData.append('title', titleInput.value.trim());
+        formData.append('categoryId', parseInt(categoryIdSelect.value, 10));
+        formData.append('isAuthorized', true);
+        formData.append('isBlocked', false);
+        formData.append('file', fileInput.files[0]);
+        formData.append('poster', posterInput.files[0]);
+
+        fetch('/api/tune', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to create tune');
+            }
+            return response.json();
+        }).then(data => {
+            if (data.id) {
+                alert('Tune created successfully!');
+                form.reset();
+            } else {
+                alert('Failed to create tune.');
+            }
+        }).catch(error => {
+            console.error('Error creating tune:', error);
+        });
     });
 });

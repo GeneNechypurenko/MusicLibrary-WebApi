@@ -14,14 +14,15 @@
         <div class="layout-header-container">
             <h2>TuneBox</h2>
             <div id="header-navigation" class="layout-header-navigation">
-                <a class="link_type_a" id="link-users">USERS</a>
-                <a class="link_type_a" id="link-genres">GENRES</a>
-                <a class="link_type_a" id="link-tunes">TUNES</a>
+                <a class="link_type_a" id="link-users" href="">USERS</a>
+                <a class="link_type_a" id="link-genres" href="">GENRES</a>
+                <a class="link_type_a" id="link-tunes" href="">TUNES</a>
             </div>
             <div class="layout-header-search"></div>
             <div id="header-content" class="layout-header-content">
                 <p class="display_username" id="greeting">Hello, </p>
-                <a class="link_type_c" id="link-logout" href="#">LogOut</a>
+                <a class="link_type_c" id="link-logout" href="">LogOut</a>
+                <a class="link_type_c" id="link-back" href="">Back</a>
             </div>
         </div>
     </header>
@@ -47,24 +48,24 @@
                 <h2>FEATURED GENRES</h2>
                 <form method="get" id="filter-form">
                     <select id="genre-select" name="selected" onchange="filterTunes()"></select>
-                    <a class="link_type_d" id="link-create-tune" href="#">CREATE NEW TUNE</a>
+                    <a class="link_type_d" id="link-create-tune" href="">CREATE NEW TUNE</a>
                 </form>
             </div>
 
             <section id="tunes-container">
                 <div class="pagination">
-                    <a href="#" id="prev-page" class="page-back" onclick="loadPreviousPage()"></a>
+                    <a href="" id="prev-page" class="page-back" onclick="loadPreviousPage()"></a>
                 </div>
                 <div id="tune-list" class="tune-container"></div>
                 <div class="pagination">
-                    <a href="#" id="next-page" class="page-forward" onclick="loadNextPage()"></a>
+                    <a href="" id="next-page" class="page-forward" onclick="loadNextPage()"></a>
                 </div>
             </section>
 
             <!-- Tunes Create -->
             <div class="user-create-data-container" id="tunes-create-container">
-                <form class="user-create-form" action="/api/tunes/create" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="__RequestVerificationToken" value="...">
+                <form class="user-create-form" method="post">
+                    <input type="hidden" name="__RequestVerificationToken" value="">
                     <div class="user-create-group-section">
                         <div class="user-create-input-group">
                             <input placeholder="Enter Artist Name" id="performer" name="performer" />
@@ -94,7 +95,7 @@
 
             <!-- Tunes Edit -->
             <div class="user-create-data-container" id="tunes-edit-container">
-                <form class="user-create-form" action="/api/tunes/edit" method="post" enctype="multipart/form-data">
+                <form class="user-create-form" method="post">
                     <input type="hidden" name="tuneId" id="tune-id" value="">
 
                     <div class="user-create-group-section">

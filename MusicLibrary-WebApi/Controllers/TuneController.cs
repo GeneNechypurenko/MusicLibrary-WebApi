@@ -10,19 +10,18 @@ namespace MusicLibrary_WebApi.Controllers
 	public class TuneController : ControllerBase
 	{
 		private readonly IService<TuneDTO> _tuneService;
-		private readonly IService<CategoryDTO> _categoryService;
+		private readonly IWebHostEnvironment _web;
 
-		public TuneController(IService<TuneDTO> tuneService, IService<CategoryDTO> categoryService)
+		public TuneController(IService<TuneDTO> tuneService, IWebHostEnvironment web)
 		{
 			_tuneService = tuneService;
-			_categoryService = categoryService;
+			_web = web;
 		}
 
 		[HttpGet]
 		public async Task<IActionResult> GetAllTunes(int selected = 0, int pageNumber = 1, int pageSize = 5)
 		{
 			var tunes = await _tuneService.GetAllAsync();
-			var categories = await _categoryService.GetAllAsync();
 
 			switch (selected)
 			{
@@ -60,26 +59,54 @@ namespace MusicLibrary_WebApi.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> CreateTune([FromBody] TuneModel tuneModel)
+		public async Task<IActionResult> CreateTune([FromForm] CreateTuneModel model)
 		{
-			if (tuneModel == null)
+			if (model.File == null || model.Poster == null)
 			{
-				return BadRequest();
+				return BadRequest("Files are required.");
 			}
+
+			string tuneFilePath = await FileUpload(model.File, "res/Tunes/Upload");
+			string posterFilePath = await FileUpload(model.Poster, "res/Tunes/Posters");
 
 			var tuneDTO = new TuneDTO
 			{
-				Performer = tuneModel.Performer,
-				Title = tuneModel.Title,
-				IsAuthorized = tuneModel.IsAuthorized,
-				IsBlocked = tuneModel.IsBlocked,
-				CategoryId = tuneModel.CategoryId
+				Performer = model.Performer,
+				Title = model.Title,
+				FileUrl = tuneFilePath,
+				PosterUrl = posterFilePath,
+				CategoryId = model.CategoryId,
+				IsAuthorized = true,
+				IsBlocked = false
 			};
 
 			await _tuneService.CreateAsync(tuneDTO);
 
 			var createdTune = await _tuneService.GetAsync(tuneDTO.Title);
 			return CreatedAtAction(nameof(GetTune), new { id = createdTune.Id }, createdTune);
+		}
+		private async Task<string> FileUpload(IFormFile file, string folderPath)
+		{
+			if (file == null || file.Length == 0)
+				return string.Empty;
+
+			string webRootPath = _web.WebRootPath;
+			string uploadPath = Path.Combine(webRootPath, folderPath);
+
+			if (!Directory.Exists(uploadPath))
+			{
+				Directory.CreateDirectory(uploadPath);
+			}
+
+			string fileName = Path.GetFileName(file.FileName);
+			string filePath = Path.Combine(uploadPath, fileName);
+
+			using (var stream = new FileStream(filePath, FileMode.Create))
+			{
+				await file.CopyToAsync(stream);
+			}
+
+			return Path.Combine(folderPath, fileName).Replace('\\', '/');
 		}
 
 		[HttpPut("{id}")]
