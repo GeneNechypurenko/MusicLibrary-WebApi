@@ -237,9 +237,9 @@
         tunesFilter.style.display = '';
         tunesContainer.style.display = '';
         logoutLink.style.display = '';
-    })
+    });
 
-    const form = document.querySelector('#tunes-create-container .user-create-form');
+    const tunesCreateForm = document.querySelector('#tunes-create-container .user-create-form');
     const performerInput = document.getElementById('performer');
     const titleInput = document.getElementById('title');
     const categoryIdSelect = document.getElementById('category-id');
@@ -270,7 +270,7 @@
     }
     loadCategories();
 
-    form.addEventListener('submit', function (event) {
+    tunesCreateForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
         let isValid = true;
@@ -316,7 +316,7 @@
         }).then(data => {
             if (data.id) {
                 alert('Tune created successfully!');
-                form.reset();
+                tunesCreateForm.reset();
             } else {
                 alert('Failed to create tune.');
             }
