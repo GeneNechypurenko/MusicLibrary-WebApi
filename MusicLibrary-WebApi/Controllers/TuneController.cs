@@ -110,24 +110,39 @@ namespace MusicLibrary_WebApi.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateTune(int id, [FromBody] TuneModel tuneModel)
+		public async Task<IActionResult> UpdateTune(int id, [FromForm] UpdateTuneModel model)
 		{
-			if (tuneModel == null)
+			if (model == null)
 			{
 				return BadRequest();
 			}
 
-			var tuneDTO = new TuneDTO
+			var tune = await _tuneService.GetAsync(id);
+			if (tune == null)
 			{
-				Id = id,
-				Performer = tuneModel.Performer,
-				Title = tuneModel.Title,
-				IsAuthorized = tuneModel.IsAuthorized,
-				IsBlocked = tuneModel.IsBlocked,
-				CategoryId = tuneModel.CategoryId
-			};
+				return NotFound();
+			}
 
-			await _tuneService.UpdateAsync(tuneDTO);
+			if (model.File != null)
+			{
+				string tuneFilePath = await FileUpload(model.File, "res/Tunes/Upload");
+				tune.FileUrl = tuneFilePath;
+			}
+
+			if (model.Poster != null)
+			{
+				string posterFilePath = await FileUpload(model.Poster, "res/Tunes/Posters");
+				tune.PosterUrl = posterFilePath;
+			}
+
+			tune.Performer = model.Performer;
+			tune.Title = model.Title;
+			tune.CategoryId = model.CategoryId;
+			tune.IsAuthorized = model.IsAuthorize == 0;
+			tune.IsBlocked = model.IsBlocked == 0;
+
+			await _tuneService.UpdateAsync(tune);
+
 			return NoContent();
 		}
 

@@ -163,7 +163,7 @@
                     </div>
                     <div class="tune-box-content">
                         <div class="tune-item-description">
-                            <a class="link_type_d" id="link-edit-tune" href="">"${tune.performer} - ${tune.title}"</a>
+                            <a class="link_type_d link-edit-tune" href="#" data-tune-id="${tune.id}">${tune.performer} - ${tune.title}</a>
                         </div>
                         <div class="tune-item-audio">
                             <audio controls>
@@ -211,6 +211,8 @@
     loadGenres();
     loadTunes();
 
+    // Create Tune
+
     const createTuneLink = document.getElementById('link-create-tune');
     const tunesFilter = document.getElementById('tunes-filter');
     const tunesContainer = document.getElementById('tunes-container');
@@ -233,6 +235,7 @@
 
         backLink.style.display = 'none';
         tunesCreateContainer.style.display = 'none';
+        tunesEditContainer.style.display = 'none';
 
         tunesFilter.style.display = '';
         tunesContainer.style.display = '';
@@ -245,30 +248,6 @@
     const categoryIdSelect = document.getElementById('category-id');
     const fileInput = document.getElementById('file');
     const posterInput = document.getElementById('poster');
-
-    function loadCategories() {
-        fetch('/api/category')
-            .then(response => response.json())
-            .then(categories => {
-                categoryIdSelect.innerHTML = '';
-
-                const placeholderOption = document.createElement('option');
-                placeholderOption.value = '';
-                placeholderOption.textContent = 'Select a Category';
-                categoryIdSelect.appendChild(placeholderOption);
-
-                categories.forEach(category => {
-                    const option = document.createElement('option');
-                    option.value = category.id;
-                    option.textContent = category.genre;
-                    categoryIdSelect.appendChild(option);
-                });
-            })
-            .catch(error => {
-                console.error('Error loading categories:', error);
-            });
-    }
-    loadCategories();
 
     tunesCreateForm.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -299,29 +278,151 @@
         const formData = new FormData();
         formData.append('performer', performerInput.value.trim());
         formData.append('title', titleInput.value.trim());
-        formData.append('categoryId', parseInt(categoryIdSelect.value, 10));
-        formData.append('isAuthorized', true);
-        formData.append('isBlocked', false);
+        formData.append('categoryId', parseInt(categoryIdSelect.value));
         formData.append('file', fileInput.files[0]);
         formData.append('poster', posterInput.files[0]);
 
         fetch('/api/tune', {
             method: 'POST',
             body: formData
-        }).then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to create tune');
-            }
-            return response.json();
-        }).then(data => {
-            if (data.id) {
-                alert('Tune created successfully!');
-                tunesCreateForm.reset();
-            } else {
-                alert('Failed to create tune.');
-            }
-        }).catch(error => {
-            console.error('Error creating tune:', error);
+        }).then(tune => {
+            loadTunes();
+            tunesCreateContainer.style.display = 'none';
+            backLink.style.display = 'none';
+            tunesFilter.style.display = '';
+            tunesContainer.style.display = '';
+            logoutLink.style.display = '';
+            alert('Tune successfully created!');
+        });
+    });
+
+    // Edit Tune
+    document.addEventListener('click', function (event) {
+        const editLink = event.target.closest('.link-edit-tune');
+        if (!editLink) return;
+
+        event.preventDefault();
+
+        const tuneId = editLink.getAttribute('data-tune-id');
+        fetch(`/api/tune/${tuneId}`)
+            .then(response => response.json())
+            .then(tune => {
+                document.getElementById('tune-id').value = tune.id;
+                document.getElementById('edit-performer').value = tune.performer;
+                document.getElementById('edit-title').value = tune.title;
+                document.getElementById('is-authorize').value = tune.isAuthorized ? '1' : '0';
+                document.getElementById('is-blocked').value = tune.isBlocked ? '1' : '0';
+                document.getElementById('edit-category-id').value = tune.categoryId;
+
+                tunesFilter.style.display = 'none';
+                tunesContainer.style.display = 'none';
+                logoutLink.style.display = 'none';
+
+                tunesEditContainer.style.display = '';
+                backLink.style.display = '';
+            });
+    });
+
+    function loadCategories(selectElementId) {
+        fetch('/api/category')
+            .then(response => response.json())
+            .then(categories => {
+                const selectElement = document.getElementById(selectElementId);
+                selectElement.innerHTML = '';
+
+                const placeholderOption = document.createElement('option');
+                placeholderOption.value = '';
+                placeholderOption.textContent = 'Select a Category';
+                selectElement.appendChild(placeholderOption);
+
+                categories.forEach(category => {
+                    const option = document.createElement('option');
+                    option.value = category.id;
+                    option.textContent = category.genre;
+                    selectElement.appendChild(option);
+                });
+            });
+    }
+    loadCategories('category-id');
+    loadCategories('edit-category-id');
+    function loadAuthorizeOptions() {
+        const authorizeSelect = document.getElementById('is-authorize');
+        authorizeSelect.innerHTML = '';
+
+        const authorizedOption = document.createElement('option');
+        authorizedOption.value = '0';
+        authorizedOption.textContent = 'Authorized';
+        authorizeSelect.appendChild(authorizedOption);
+
+        const unauthorizedOption = document.createElement('option');
+        unauthorizedOption.value = '1';
+        unauthorizedOption.textContent = 'Unauthorized';
+        authorizeSelect.appendChild(unauthorizedOption);
+    }
+    loadAuthorizeOptions();
+    function loadBlockedOptions() {
+        const blockedSelect = document.getElementById('is-blocked');
+        blockedSelect.innerHTML = '';
+
+        const blockedOption = document.createElement('option');
+        blockedOption.value = '0';
+        blockedOption.textContent = 'Blocked';
+        blockedSelect.appendChild(blockedOption);
+
+        const unblockedOption = document.createElement('option');
+        unblockedOption.value = '1';
+        unblockedOption.textContent = 'Unblocked';
+        blockedSelect.appendChild(unblockedOption);
+    }
+    loadBlockedOptions();
+
+    const tunesEditContainer = document.getElementById('tunes-edit-container');
+    const tunesEditForm = document.querySelector('#tunes-edit-container .user-create-form');
+
+    tunesEditForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        let isValid = true;
+
+        document.querySelectorAll('.validation-message').forEach(el => el.textContent = '');
+
+        const performer = document.getElementById('edit-performer').value.trim();
+        const title = document.getElementById('edit-title').value.trim();
+        const categoryId = document.getElementById('edit-category-id').value;
+
+        if (!performer) {
+            document.getElementById('edit-performer-error').textContent = 'Artist Name is required.';
+            isValid = false;
+        }
+
+        if (!title) {
+            document.getElementById('edit-title-error').textContent = 'Title is required.';
+            isValid = false;
+        }
+
+        if (categoryId === "") {
+            document.getElementById('edit-category-error').textContent = 'Please select a category.';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            return;
+        }
+
+        const tuneId = document.getElementById('tune-id').value;
+        const formData = new FormData(tunesEditForm);
+
+        fetch(`/api/tune/${tuneId}`, {
+            method: 'PUT',
+            body: formData
+        }).then(updatedTune => {
+            loadTunes();
+            tunesEditContainer.style.display = 'none';
+            backLink.style.display = 'none';
+            tunesFilter.style.display = '';
+            tunesContainer.style.display = '';
+            logoutLink.style.display = '';
+            alert('Tune updated successfully!');
         });
     });
 });
