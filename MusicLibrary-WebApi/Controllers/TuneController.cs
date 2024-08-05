@@ -149,6 +149,12 @@ namespace MusicLibrary_WebApi.Controllers
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteTune(int id)
 		{
+			var tune = await _tuneService.GetAsync(id);
+			if (tune == null)
+			{
+				return NotFound();
+			}
+
 			await _tuneService.DeleteAsync(id);
 			return NoContent();
 		}

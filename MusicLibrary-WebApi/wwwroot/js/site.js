@@ -296,7 +296,7 @@
         });
     });
 
-    // Edit Tune
+    // Update Tune
     document.addEventListener('click', function (event) {
         const editLink = event.target.closest('.link-edit-tune');
         if (!editLink) return;
@@ -424,5 +424,39 @@
             logoutLink.style.display = '';
             alert('Tune updated successfully!');
         });
+    });
+
+    // Delete Tune
+
+    document.querySelectorAll('.link-edit-tune').forEach(link => {
+        link.addEventListener('click', function (e) {
+            e.preventDefault();
+            const tuneId = this.getAttribute('data-tune-id');
+
+            document.getElementById('tune-id').value = tuneId;
+
+            document.getElementById('tunes-edit-container').style.display = 'block';
+        });
+    });
+
+    document.getElementById('delete-tune').addEventListener('click', function (e) {
+        e.preventDefault();
+        const tuneId = document.getElementById('tune-id').value;
+
+        if (confirm('Are you sure you want to delete this tune?')) {
+            fetch(`/api/tune/${tuneId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => {
+                if (response.ok) {
+                    alert('Tune deleted successfully.');
+                    location.reload();
+                } else {
+                    alert('Error deleting tune.');
+                }
+            });
+        }
     });
 });

@@ -47,18 +47,18 @@
             <div class="filter" id="tunes-filter">
                 <h2>FEATURED GENRES</h2>
                 <form method="get" id="filter-form">
-                    <select id="genre-select" name="selected" onchange="filterTunes()"></select>
+                    <select id="genre-select" name="selected"></select>
                     <a class="link_type_d" id="link-create-tune" href="">CREATE NEW TUNE</a>
                 </form>
             </div>
 
             <section id="tunes-container">
                 <div class="pagination">
-                    <a href="" id="prev-page" class="page-back" onclick="loadPreviousPage()"></a>
+                    <a href="" id="prev-page" class="page-back"></a>
                 </div>
                 <div id="tune-list" class="tune-container"></div>
                 <div class="pagination">
-                    <a href="" id="next-page" class="page-forward" onclick="loadNextPage()"></a>
+                    <a href="" id="next-page" class="page-forward"></a>
                 </div>
             </section>
 
@@ -105,7 +105,7 @@
                             <select id="is-blocked" name="isBlocked"></select>
                             <span>Blocked Warning</span>
                             <hr />
-                            <a class="delete-link" href="#" data-id="" id="delete-tune">Delete Tune</a>
+                            <a class="delete-link" href="" id="delete-tune">Delete Tune</a>
                         </div>
                         <div class="user-create-input-group">
                             <input placeholder="Enter Artist Name" id="edit-performer" name="performer" />
@@ -133,6 +133,7 @@
                 </form>
             </div>
 
+            <!-- in progress -->
             <!-- Users Filter and Users List -->
             <div class="filter" id="users-filter">
                 <h2>USER MANAGEMENT</h2>
@@ -156,8 +157,8 @@
                     <a href="#" id="next-user-page" class="page-forward" onclick="loadNextUserPage()"></a>
                 </div>
             </section>
-
             <!-- Section Genres here -->
+            <!-- in progress -->
 
         </section>
     </main>
