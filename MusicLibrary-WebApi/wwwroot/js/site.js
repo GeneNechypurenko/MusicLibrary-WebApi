@@ -26,6 +26,14 @@
         '#link-logout'
     ];
 
+    const commonElementsToShow = [
+        '#link-users',
+        '#link-genres',
+        '#link-tunes',
+        '#greeting',
+        '#link-logout'
+    ];
+
     function updateVisibility(isLoggedIn) {
         elementsToHide.forEach(selector => {
             const element = document.querySelector(selector);
@@ -48,8 +56,58 @@
     const isLoggedIn = user !== null;
     updateVisibility(isLoggedIn);
 
-    // 'Users Login Section' rendering and 'UserController POST' action logic:
+    const linkUsers = document.getElementById('link-users');
+    const usersFilter = document.getElementById('users-filter');
+    const usersContainer = document.getElementById('users-container');
 
+    linkUsers.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        elementsToHide.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+
+        commonElementsToShow.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = '';
+            }
+        });
+
+        usersFilter.style.display = '';
+        usersContainer.style.display = '';
+    });
+
+    const linkGenres = document.getElementById('link-genres');
+    const genresFilter = document.getElementById('genres-filter');
+    const genresContainer = document.getElementById('genres-container');
+
+    linkGenres.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        elementsToHide.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = 'none';
+            }
+        });
+
+        commonElementsToShow.forEach(selector => {
+            const element = document.querySelector(selector);
+            if (element) {
+                element.style.display = '';
+            }
+        });
+
+        genresFilter.style.display = '';
+        genresContainer.style.display = '';
+    });
+
+
+    // 'Users Login Section' rendering and 'UserController POST' action logic:
     const loginForm = document.getElementById('login-form');
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
@@ -113,7 +171,6 @@
 
 
     // 'Tunes General Section' rendering and 'TuneController GET action' logic:
-
     const genreSelect = document.getElementById('genre-select');
     const tuneList = document.getElementById('tune-list');
     const prevPageLink = document.getElementById('prev-page');
@@ -219,9 +276,7 @@
     loadTunes();
 
 
-
     // 'Tunes Create Section' rendering and 'TuneController POST' actiong logic:
-
     const createTuneLink = document.getElementById('link-create-tune');
     const tunesFilter = document.getElementById('tunes-filter');
     const tunesContainer = document.getElementById('tunes-container');
@@ -305,31 +360,30 @@
         });
     });
 
+
     // 'Tunes Update Section' rendering and 'TuneController PUT' action logic:
     document.addEventListener('click', function (event) {
-        const editLink = event.target.closest('.link-edit-tune');
-        if (!editLink) return;
+        const target = event.target;
+        if (target.classList.contains('link-edit-tune')) {
+            event.preventDefault();
+            const tuneId = target.getAttribute('data-tune-id');
+            fetch(`/api/tune/${tuneId}`)
+                .then(response => response.json())
+                .then(tune => {
+                    document.getElementById('tune-id').value = tune.id;
+                    document.getElementById('edit-performer').value = tune.performer;
+                    document.getElementById('edit-title').value = tune.title;
+                    document.getElementById('is-authorize').value = tune.isAuthorized ? '1' : '0';
+                    document.getElementById('is-blocked').value = tune.isBlocked ? '1' : '0';
+                    document.getElementById('edit-category-id').value = tune.categoryId;
 
-        event.preventDefault();
-
-        const tuneId = editLink.getAttribute('data-tune-id');
-        fetch(`/api/tune/${tuneId}`)
-            .then(response => response.json())
-            .then(tune => {
-                document.getElementById('tune-id').value = tune.id;
-                document.getElementById('edit-performer').value = tune.performer;
-                document.getElementById('edit-title').value = tune.title;
-                document.getElementById('is-authorize').value = tune.isAuthorized ? '1' : '0';
-                document.getElementById('is-blocked').value = tune.isBlocked ? '1' : '0';
-                document.getElementById('edit-category-id').value = tune.categoryId;
-
-                tunesFilter.style.display = 'none';
-                tunesContainer.style.display = 'none';
-                logoutLink.style.display = 'none';
-
-                tunesEditContainer.style.display = '';
-                backLink.style.display = '';
-            });
+                    tunesFilter.style.display = 'none';
+                    tunesContainer.style.display = 'none';
+                    logoutLink.style.display = 'none';
+                    tunesEditContainer.style.display = '';
+                    backLink.style.display = '';
+                });
+        }
     });
 
     function loadCategories(selectElementId) {
@@ -435,8 +489,8 @@
         });
     });
 
-    // 'TuneController DELETE' action logic:
 
+    // 'TuneController DELETE' action logic:
     document.querySelectorAll('.link-edit-tune').forEach(link => {
         link.addEventListener('click', function (e) {
             e.preventDefault();
