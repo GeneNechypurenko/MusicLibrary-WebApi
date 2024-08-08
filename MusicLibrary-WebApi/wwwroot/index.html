@@ -30,7 +30,7 @@
     <main>
         <section class="layout-main-container" id="main-content">
 
-            <!-- Login Form -->
+            <!-- Users Login Section -->
             <div class="data-container" id="login-container">
                 <form id="login-form" method="post">
                     <input id="username" placeholder="Enter your username" name="username" />
@@ -43,7 +43,7 @@
                 </form>
             </div>
 
-            <!-- Tunes Filter and Tunes List -->
+            <!-- Tunes General Section -->
             <div class="filter" id="tunes-filter">
                 <h2>FEATURED GENRES</h2>
                 <form method="get" id="filter-form">
@@ -62,7 +62,7 @@
                 </div>
             </section>
 
-            <!-- Tunes Create -->
+            <!-- Tunes Create Section -->
             <div class="user-create-data-container" id="tunes-create-container">
                 <form class="user-create-form" method="post">
                     <input type="hidden" name="__RequestVerificationToken" value="">
@@ -93,7 +93,7 @@
                 </form>
             </div>
 
-            <!-- Tunes Edit -->
+            <!-- Tunes Edit Section -->
             <div class="user-create-data-container" id="tunes-edit-container">
                 <form class="user-create-form" method="post">
                     <input type="hidden" name="tuneId" id="tune-id" value="">
@@ -134,13 +134,11 @@
             </div>
 
             <!-- in progress -->
-            <!-- Users Filter and Users List -->
+            <!-- Users General Section -->
             <div class="filter" id="users-filter">
                 <h2>USER MANAGEMENT</h2>
                 <form method="get" id="user-filter-form">
-                    <select id="user-select" name="selected" onchange="filterUsers()">
-                        <!-- Options will be dynamically added by JavaScript -->
-                    </select>
+                    <select id="user-select" name="selected" onchange="filterUsers()"></select>
                 </form>
             </div>
 
@@ -149,9 +147,7 @@
                     <a href="#" id="prev-user-page" class="page-back" onclick="loadPreviousUserPage()"></a>
                 </div>
 
-                <div id="user-list" class="user-container">
-                    <!-- Users will be dynamically added by JavaScript -->
-                </div>
+                <div id="user-list" class="user-container"></div>
 
                 <div class="pagination">
                     <a href="#" id="next-user-page" class="page-forward" onclick="loadNextUserPage()"></a>

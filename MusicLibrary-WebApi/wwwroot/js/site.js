@@ -1,4 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', function () {
+
+    // Sections rendering and elements visibility:
     const elementsToHide = [
         '#link-users',
         '#link-genres',
@@ -45,6 +47,8 @@
     const user = sessionStorage.getItem('user');
     const isLoggedIn = user !== null;
     updateVisibility(isLoggedIn);
+
+    // 'Users Login Section' rendering and 'UserController POST' action logic:
 
     const loginForm = document.getElementById('login-form');
     const usernameInput = document.getElementById('username');
@@ -106,6 +110,9 @@
         sessionStorage.removeItem('user');
         updateVisibility(false);
     });
+
+
+    // 'Tunes General Section' rendering and 'TuneController GET action' logic:
 
     const genreSelect = document.getElementById('genre-select');
     const tuneList = document.getElementById('tune-list');
@@ -211,7 +218,9 @@
     loadGenres();
     loadTunes();
 
-    // Create Tune
+
+
+    // 'Tunes Create Section' rendering and 'TuneController POST' actiong logic:
 
     const createTuneLink = document.getElementById('link-create-tune');
     const tunesFilter = document.getElementById('tunes-filter');
@@ -296,7 +305,7 @@
         });
     });
 
-    // Update Tune
+    // 'Tunes Update Section' rendering and 'TuneController PUT' action logic:
     document.addEventListener('click', function (event) {
         const editLink = event.target.closest('.link-edit-tune');
         if (!editLink) return;
@@ -426,7 +435,7 @@
         });
     });
 
-    // Delete Tune
+    // 'TuneController DELETE' action logic:
 
     document.querySelectorAll('.link-edit-tune').forEach(link => {
         link.addEventListener('click', function (e) {
@@ -459,4 +468,9 @@
             });
         }
     });
+
+
+
+    // 'Users General Section' rendering and 'UserController GET' action logic:
+
 });
