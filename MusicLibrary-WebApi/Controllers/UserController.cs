@@ -17,11 +17,26 @@ namespace MusicLibrary_WebApi.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetAllUsers()
+		public async Task<IActionResult> GetUsers(int pageNumber = 1, int pageSize = 10, int selected = 0)
 		{
 			var users = await _userService.GetAllAsync();
-			return Ok(users);
+			var userList = users.Where(u => !u.IsAdmin).ToList();
+
+			if (selected == 1)
+			{
+				userList = userList.Where(u => !u.IsAuthorized).ToList();
+			}
+			else if (selected == 2)
+			{
+				userList = userList.Where(u => u.IsBlocked).ToList();
+			}
+
+			var count = userList.Count();
+			var usersOnPage = userList.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+			return Ok(usersOnPage);
 		}
+
 
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetUser(int id)
@@ -69,9 +84,9 @@ namespace MusicLibrary_WebApi.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> EditUser(int id, [FromBody] UserModel userModel)
+		public async Task<IActionResult> EditUser(int id, [FromForm] IFormCollection form)
 		{
-			if (userModel == null)
+			if (form == null)
 			{
 				return BadRequest("Invalid user data.");
 			}
@@ -82,9 +97,8 @@ namespace MusicLibrary_WebApi.Controllers
 				return NotFound();
 			}
 
-			userDTO.Username = userModel.Username;
-			userDTO.IsAuthorized = userModel.IsAuthorized;
-			userDTO.IsBlocked = userModel.IsBlocked;
+			userDTO.IsAuthorized = form["isAuthorized"] == "0";
+			userDTO.IsBlocked = form["isBlocked"] == "0";
 
 			await _userService.UpdateAsync(userDTO);
 			return NoContent();
@@ -104,3 +118,4 @@ namespace MusicLibrary_WebApi.Controllers
 		}
 	}
 }
+

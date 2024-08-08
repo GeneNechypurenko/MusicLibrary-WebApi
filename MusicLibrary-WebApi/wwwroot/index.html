@@ -100,10 +100,10 @@
                     <div class="user-create-group-section">
                         <div class="user-create-input-group">
                             <select id="is-authorize" name="isAuthorize"></select>
-                            <span>New Authorization Warning</span>
+                            <span>Unauthorized TUNE will be moved to 'New'</span>
                             <hr />
                             <select id="is-blocked" name="isBlocked"></select>
-                            <span>Blocked Warning</span>
+                            <span>Blocked TUNE will be moved to 'Blocked'</span>
                             <hr />
                             <a class="delete-link" href="" id="delete-tune">Delete Tune</a>
                         </div>
@@ -138,7 +138,11 @@
             <div class="filter" id="users-filter">
                 <h2>USER MANAGEMENT</h2>
                 <form method="get" id="user-filter-form">
-                    <select id="user-select" name="selected"></select>
+                    <select id="user-select" name="selected">
+                        <option value="0">All Users</option>
+                        <option value="1">New Users</option>
+                        <option value="2">Blocked</option>
+                    </select>
                 </form>
             </div>
 
@@ -146,13 +150,33 @@
                 <div class="pagination">
                     <a href="#" id="prev-user-page" class="page-back"></a>
                 </div>
-
                 <div id="user-list" class="tune-container"></div>
-
                 <div class="pagination">
                     <a href="#" id="next-user-page" class="page-forward"></a>
                 </div>
             </section>
+
+            <!-- Users Edit Section -->
+            <div class="user-create-data-container" id="users-edit-container">
+                <form class="user-create-form" method="post">
+                    <input type="hidden" name="userId" id="user-id" value=""/>
+                    <div class="user-create-group-section">
+                        <div class="user-create-input-group">
+                            <select id="is-user-authorized" name="isUserAuthorized" class="form-control"></select>
+                            <span>Unauthorized USER will be moved to 'New'</span>
+                            <hr />
+                            <select id="is-user-blocked" name="isUserBlocked" class="form-control"></select>
+                            <span>Blocked USER will be moved to 'Blocked'</span>
+                            <hr />
+                            <a class="delete-link" href="" id="delete-user">DELETE USER</a>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="user-create-button-section">
+                        <button class="confirm-button" type="submit">Confirm</button>
+                    </div>
+                </form>
+            </div>
             <!-- Section Genres here -->
             <!-- in progress -->
 
