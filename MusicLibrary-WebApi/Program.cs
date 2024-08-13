@@ -23,12 +23,19 @@ namespace MusicLibrary_WebApi
 			});
 
 			builder.Services.AddSwaggerGen();
+			builder.Services.AddCors();
 
 			var app = builder.Build();
 
 			app.UseStaticFiles();
 			app.UseHttpsRedirection();
 			app.MapControllers();
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI();
+			}
+			app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
 			app.Run();
 		}

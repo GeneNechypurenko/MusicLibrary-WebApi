@@ -15,10 +15,4 @@
     <ProjectReference Include="..\MusicLibraryApp.BLL\MusicLibraryApp.BLL.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\background\background.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>
