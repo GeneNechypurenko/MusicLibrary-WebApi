@@ -39,10 +39,16 @@ namespace MusicLibrary_WebApi.Controllers
 					break;
 			}
 
-			var count = tunes.Count();
-			var tunesOnPage = tunes.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+			var tunesOnPage = tunes.Skip((pageNumber - 1) * pageSize).Take(pageSize).Select(tune => new
+			{
+				tune.Id,
+				tune.Performer,
+				tune.Title,
+				PosterUrl = $"https://localhost:7159/{tune.PosterUrl}",
+				FileUrl = $"https://localhost:7159/{tune.FileUrl}"
+			}).ToList();
 
-			var pagination = new PaginationModel(count, pageNumber, pageSize);
+			var pagination = new PaginationModel(tunes.Count(), pageNumber, pageSize);
 
 			return Ok(new { tunes = tunesOnPage, pagination });
 		}
